@@ -1,5 +1,6 @@
 version: "3.8"
 services:
+  # api service
   api:
     build:
       context: ./api
@@ -11,7 +12,10 @@ services:
       - ./api:/app  
     networks:
       - real-state-network
+    depends_on:
+      - mongo-db
 
+  # client service
   client:
     build:
       context: ./client
@@ -23,7 +27,37 @@ services:
       - ./client:/app   
     networks:
       - real-state-network
+    depends_on:
+      - mongo-db
+      - api
+
+  # Mongodb
+  mongo-db:
+   image: mongo:latest
+   ports:
+     - 27017:27017
+   volumes:
+     - mongodb-data:/data/db
+   networks:
+    - real-state-network
+  
+  # Mongo db visualization 
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo-db
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+    depends_on:
+      - mongo-db
+    networks:
+      - real-state-network
 
 networks:
   real-state-network:
     driver: bridge
+
+volumes:
+  mongodb-data:

@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  # configure mongo db database
+  mongo-db:
+   image: mongo:latest
+   ports:
+     - 27017:27017
+   volumes:
+     - mongodb-data:/data/db
+   networks:
+    - db-networks
+  
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - 8081:8081 
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo-db
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+    depends_on:
+      - mongo-db 
+    networks:
+      - db-networks
+
+networks:
+  db-networks:
+   driver: bridge
+
+volumes:
+  mongodb-data:
+
+  
