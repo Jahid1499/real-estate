@@ -1,6 +1,7 @@
 import cors from "cors";
 import dotenv from 'dotenv';
 import express from "express";
+import mongoose from "mongoose";
 import morgan from "morgan";
 
 dotenv.config();
@@ -30,4 +31,13 @@ app.use((err, _req, res, _next) => {
 
 const port = process.env.PORT || 4000;
 const service_name = process.env.SERVICE_NAME || 'Real estate'
-app.listen(port, () => console.log(`${service_name} is running on http://localhost:${port}`));
+
+// connect to mongodb
+mongoose.connect(process.env.DATABASE_URL as string)
+    .then(() => {
+        console.log('Connected to MongoDB');
+        app.listen(port, () => console.log(`${service_name} is running on http://localhost:${port}`));
+    })
+    .catch((err) => console.log("cannot connect"))
+
+

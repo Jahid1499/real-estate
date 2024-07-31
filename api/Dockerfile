@@ -10,7 +10,7 @@ COPY . .
 
 ENV PORT 4000
 ENV SERVICE_NAME "Real State Api Service"
-ENV DATABASE_URL "mongodb://mongo-db:27017/real-state"
+ENV DATABASE_URL "mongodb://localhost:27017/real-state"
 
 EXPOSE 4000
 
