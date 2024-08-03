@@ -1,5 +1,7 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
 import Header from "./components/Header"
+import PrivateRoute from "./components/PrivateRoute"
+import PublicRoute from "./components/PublicRoute"
 import useAuthCheck from "./hooks/useAuthCheck"
 import About from "./pages/About"
 import Home from "./pages/Home"
@@ -18,10 +20,10 @@ const App = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<SignIn />} />
-        <Route path="/registration" element={<SignUp />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/login" element={<PublicRoute><SignIn /></PublicRoute>} />
+        <Route path="/registration" element={<PublicRoute><SignUp /></PublicRoute>} />
+        <Route path="/about" element={<PrivateRoute><About /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
 
         <Route path="/*" element={<NotFound />} />
       </Routes>

@@ -1,12 +1,20 @@
 
 import { FaSearch } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { userLoggedOut } from "../features/auth/authSlice";
 import { RootState } from "../types/rootState";
 
 const Header = () => {
     const { user } = useSelector((state: RootState) => state.auth);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
+    const handleLogout = () => {
+        dispatch(userLoggedOut());
+        localStorage.clear();
+        navigate("/");
+    }
     return (
         <header className='bg-slate-200 shadow-md'>
             <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
@@ -42,17 +50,22 @@ const Header = () => {
                             About
                         </li>
                     </Link>
-                    <Link to='/profile'>
-                        {user ? (
-                            <img
-                                className='rounded-full h-7 w-7 object-cover'
-                                src={user.avatar}
-                                alt='profile'
-                            />
-                        ) : (
-                            <li className=' text-slate-700 font-bold hover:underline'> Sign in</li>
-                        )}
-                    </Link>
+                    {user ? (
+                        <Link to='/profile'>
+                            <div className="flex items-center gap-2">
+                                <img
+                                    className='rounded-full h-7 w-7 object-cover'
+                                    src={user.avatar}
+                                    alt='profile'
+                                />
+                                <li onClick={handleLogout} className="text-slate-700 font-bold hover:underline">Log Out</li>
+                            </div>
+                        </Link>
+                    ) : (
+                        <Link to='/login'>
+                            <li className='text-slate-700 font-bold hover:underline'> Sign in</li>
+                        </Link>
+                    )}
                 </ul>
             </div>
         </header>

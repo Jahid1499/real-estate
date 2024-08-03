@@ -16,6 +16,7 @@ const SignIn = () => {
         if (responseError?.data) {
             setError(responseError?.data?.message);
         }
+
         if (data?.accessToken && data?.user) {
             navigate("/");
         }
