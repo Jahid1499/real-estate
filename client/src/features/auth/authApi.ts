@@ -62,7 +62,38 @@ export const authApi = apiSlice.injectEndpoints({
                 }
             },
         }),
+
+        googleLogin: builder.mutation({
+            query: (data) => ({
+                url: "/auth/google",
+                method: "POST",
+                body: data,
+            }),
+
+            async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
+                try {
+                    const result = await queryFulfilled;
+
+                    localStorage.setItem(
+                        "auth",
+                        JSON.stringify({
+                            accessToken: result.data.accessToken,
+                            user: result.data.user,
+                        })
+                    );
+
+                    dispatch(
+                        userLoggedIn({
+                            accessToken: result.data.accessToken,
+                            user: result.data.user,
+                        })
+                    );
+                } catch (err) {
+                    // do nothing
+                }
+            },
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useGoogleLoginMutation } = authApi;

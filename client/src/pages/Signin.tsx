@@ -1,5 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import OAuth from "../components/OAuth";
 import { useLoginMutation } from "../features/auth/authApi";
 
 
@@ -58,7 +59,7 @@ const SignIn = () => {
                 >
                     {isLoading ? 'Loading...' : 'Sign In'}
                 </button>
-                {/* <OAuth /> */}
+                <OAuth />
             </form>
             <div className="text-center">
                 {error && <p className='text-red-500 mt-5 font-semibold'>{error}</p>}
