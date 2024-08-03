@@ -33,7 +33,7 @@ const login = async (req: Request, res: Response, next: NextFunction) => {
         { expiresIn: '2h' }
     );
 
-    return res.status(200).json({ message: "Successfully login", accessToken });
+    return res.status(200).json({ message: "Successfully login", accessToken, user: { userId: user._id, email: user.email, name: user.name, role: user.role, avatar: user.avatar } });
 }
 
 export default login;

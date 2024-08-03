@@ -1,5 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom"
 import Header from "./components/Header"
+import useAuthCheck from "./hooks/useAuthCheck"
 import About from "./pages/About"
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
@@ -10,7 +11,9 @@ import SignIn from "./pages/Signin"
 
 const App = () => {
 
-  return (
+  const authChecked = useAuthCheck();
+
+  return !authChecked ? (<div>Checking authentication....</div>) : (
     <Router>
       <Header />
       <Routes>
