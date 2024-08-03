@@ -32,9 +32,9 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
             process.env.JWT_SECRET ?? 'Secret_Key',
             { expiresIn: '2h' }
         );
-        return res.status(201).json({ message: "User created successfully", accessToken, user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role, avatar: newUser.avatar } });
+        return res.status(201).json({ message: "Successfully user created", accessToken, user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role, avatar: newUser.avatar } });
     } catch (error) {
-        return res.status(500).json({ message: "Internal server error", error });
+        next(error);
     }
 }
 
