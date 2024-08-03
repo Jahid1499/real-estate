@@ -3,6 +3,8 @@ import User from '@/models/users.model';
 import { UserSignUpSchema } from '@/schemas/user.schemas';
 import bcrypt from 'bcryptjs';
 import { NextFunction, Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+
 
 const register = async (req: Request, res: Response, next: NextFunction) => {
     const parseData = await UserSignUpSchema.safeParse(req.body);
@@ -25,9 +27,14 @@ const register = async (req: Request, res: Response, next: NextFunction) => {
     const newUser = new User({ email, name, password: hashPassword });
     try {
         await newUser.save();
-        return res.status(201).json({ message: "User created successfully" });
+        const accessToken = jwt.sign(
+            { userId: newUser._id, email: newUser.email, name: newUser.name, role: newUser.role },
+            process.env.JWT_SECRET ?? 'Secret_Key',
+            { expiresIn: '2h' }
+        );
+        return res.status(201).json({ message: "User created successfully", accessToken, user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role, avatar: newUser.avatar } });
     } catch (error) {
-        return res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error", error });
     }
 }
 
