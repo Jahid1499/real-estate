@@ -1,5 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
-import { userLoggedIn } from "./authSlice";
+import { userLoggedIn, userLoggedOut } from "./authSlice";
 
 export const authApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
@@ -97,7 +97,7 @@ export const authApi = apiSlice.injectEndpoints({
         userUpdate: builder.mutation({
             query: (data) => ({
                 url: "/auth/update",
-                method: "POST",
+                method: "PUT",
                 body: data,
             }),
             async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
@@ -119,7 +119,24 @@ export const authApi = apiSlice.injectEndpoints({
                 }
             },
         }),
+
+        userDelete: builder.mutation({
+            query: (data) => ({
+                url: "/auth/delete",
+                method: "delete",
+                body: data,
+            }),
+
+            async onQueryStarted(_arg, { dispatch }) {
+                try {
+                    dispatch(userLoggedOut());
+                    localStorage.clear();
+                } catch (err) {
+                    // do nothing
+                }
+            },
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGoogleLoginMutation, useUserUpdateMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useGoogleLoginMutation, useUserUpdateMutation, useUserDeleteMutation } = authApi;

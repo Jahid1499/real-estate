@@ -23,6 +23,10 @@ export const AccessTokenSchema = z.object({
     accessToken: z.string(),
 });
 
+export const DeleteAccountSchema = z.object({
+    email: z.string().max(30).optional(),
+});
+
 export const UserLoginSchema = z.object({
     email: z.string().email(),
     password: z.string(),

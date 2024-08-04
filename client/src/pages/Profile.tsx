@@ -2,7 +2,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useUserUpdateMutation } from "../features/auth/authApi";
+import { useUserDeleteMutation, useUserUpdateMutation } from "../features/auth/authApi";
 import { userLoggedOut } from "../features/auth/authSlice";
 import { app } from "../firebase";
 import { RootState } from "../types/rootState";
@@ -11,7 +11,9 @@ const Profile = () => {
     const [formData, setFormData] = useState<{ name?: string, email?: string, password?: string, avatar?: string }>({});
     const { user: { name, email, avatar } } = useSelector((state: RootState) => state.auth);
     const fileRef = useRef<HTMLInputElement | null>(null);
-    const [userUpdate, { data, isLoading, isSuccess }] = useUserUpdateMutation();
+
+    const [userUpdate, { isLoading, isSuccess }] = useUserUpdateMutation();
+    const [userDelete, { isLoading: deleteLoading, isSuccess: deleteSuccess }] = useUserDeleteMutation();
 
     const [file, setFile] = useState<File | undefined>(undefined);
     const [filePercentage, setFilePercentage] = useState<number>(0);
@@ -19,8 +21,6 @@ const Profile = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
-    console.log(formData);
 
     /**
      * Firebase storage
@@ -31,12 +31,24 @@ const Profile = () => {
      *  
      */
 
+    useEffect(() => {
+        if (deleteSuccess) {
+            navigate("/");
+        }
+    }, [deleteSuccess, navigate])
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         userUpdate({ ...formData, email })
     };
 
     const handleDeleteUser = async () => {
+        const userConfirmed = window.confirm("Are you sure you want to delete your account?");
+        if (userConfirmed) {
+            userDelete({ email });
+        } else {
+            window.alert("Your account is safe")
+        }
 
     };
 
@@ -61,6 +73,7 @@ const Profile = () => {
         if (file) {
             handleFileUpload(file);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [file]);
 
     const handleFileUpload = (file: File) => {
@@ -155,12 +168,15 @@ const Profile = () => {
                     onClick={handleDeleteUser}
                     className='text-red-700 cursor-pointer'
                 >
-                    Delete account
+                    {deleteLoading ? 'Deleting .....' : 'Delete account'}
                 </span>
                 <span onClick={handleSignOut} className='text-red-700 cursor-pointer'>
                     Sign out
                 </span>
             </div>
+            {
+                deleteSuccess && <p className="text-center text-green-600 font-semibold">Successfully delete account</p>
+            }
         </div>
     )
 }
