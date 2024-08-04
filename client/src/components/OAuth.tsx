@@ -43,7 +43,7 @@ const OAuth = () => {
                 disabled={loading || isLoading}
                 onClick={handleGoogleClick}
                 type='button'
-                className='bg-red-700 text-white p-3 rounded-lg uppercase hover:opacity-95'
+                className='bg-red-700 w-full text-white p-3 rounded-lg uppercase hover:opacity-80 disabled:opacity-80'
             >
                 {loading || isLoading ? 'Loading ......' : 'Continue with google'}
             </button>
