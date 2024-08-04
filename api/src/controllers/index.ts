@@ -5,5 +5,6 @@ export { default as test } from '@/controllers/user/user.controller';
 export { default as googleLogin } from '@/controllers/auth/googleLogin.controller';
 export { default as login } from '@/controllers/auth/login.controller';
 export { default as register } from '@/controllers/auth/register.controller';
+export { default as userUpdate } from '@/controllers/auth/userUpdate.controller';
 
 

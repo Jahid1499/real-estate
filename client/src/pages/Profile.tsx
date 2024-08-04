@@ -1,18 +1,26 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useUserUpdateMutation } from "../features/auth/authApi";
+import { userLoggedOut } from "../features/auth/authSlice";
 import { app } from "../firebase";
 import { RootState } from "../types/rootState";
 
 const Profile = () => {
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState<{ name?: string, email?: string, password?: string, avatar?: string }>({});
     const { user: { name, email, avatar } } = useSelector((state: RootState) => state.auth);
     const fileRef = useRef<HTMLInputElement | null>(null);
+    const [userUpdate, { data, isLoading, isSuccess }] = useUserUpdateMutation();
 
     const [file, setFile] = useState<File | undefined>(undefined);
     const [filePercentage, setFilePercentage] = useState<number>(0);
     const [fileUploadError, setFileUploadError] = useState<boolean>(false);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    console.log(formData);
 
     /**
      * Firebase storage
@@ -25,6 +33,7 @@ const Profile = () => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        userUpdate({ ...formData, email })
     };
 
     const handleDeleteUser = async () => {
@@ -32,11 +41,13 @@ const Profile = () => {
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.id]: e.target.value });
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
     const handleSignOut = async () => {
-
+        dispatch(userLoggedOut());
+        localStorage.clear();
+        navigate("/");
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,18 +115,18 @@ const Profile = () => {
                 <input
                     type='text'
                     placeholder='name'
-                    defaultValue={name}
-                    name='name'
                     className='border p-3 rounded-lg'
+                    name='name'
+                    value={formData?.name || name}
                     onChange={handleChange}
                 />
+
                 <input
                     type='email'
                     placeholder='email'
-                    id='email'
                     defaultValue={email}
                     className='border p-3 rounded-lg'
-                    onChange={handleChange}
+                    disabled
                 />
                 <input
                     type='password'
@@ -128,9 +139,10 @@ const Profile = () => {
 
                     className='bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80'
                 >
-                    {/* {loading ? 'Loading...' : 'Update'} */}
-                    Update
+                    {isLoading ? 'Loading...' : 'Update'}
+
                 </button>
+                {isSuccess && <p className="text-center text-green-500">Successfully updated</p>}
                 <Link
                     className='bg-green-700 text-white p-3 rounded-lg uppercase text-center hover:opacity-95'
                     to={'/create-listing'}

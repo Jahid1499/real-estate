@@ -93,7 +93,33 @@ export const authApi = apiSlice.injectEndpoints({
                 }
             },
         }),
+
+        userUpdate: builder.mutation({
+            query: (data) => ({
+                url: "/auth/update",
+                method: "POST",
+                body: data,
+            }),
+            async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
+                try {
+                    const result = await queryFulfilled;
+
+                    let localStorageOldData = JSON.parse(localStorage.getItem('auth') as string);
+
+                    localStorageOldData = {
+                        ...localStorageOldData,
+                        user: result.data.user,
+                    }
+
+                    localStorage.setItem("auth", JSON.stringify(localStorageOldData));
+
+                    dispatch(userLoggedIn(localStorageOldData));
+                } catch (err) {
+                    // do nothing
+                }
+            },
+        }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useGoogleLoginMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation, useGoogleLoginMutation, useUserUpdateMutation } = authApi;
