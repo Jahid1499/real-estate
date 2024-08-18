@@ -4,7 +4,9 @@ import dotenv from 'dotenv';
 import express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
+import { authenticate } from './middleware/authenticate';
 import authRouter from "./routes/auth.route";
+import listingRouter from "./routes/listing.route";
 
 
 dotenv.config();
@@ -21,6 +23,7 @@ app.get("/health", (_req, res) => {
 // Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/listing", authenticate, listingRouter);
 
 // 404 error handler
 app.use((_req, res) => {

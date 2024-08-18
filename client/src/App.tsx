@@ -3,6 +3,7 @@ import Header from "./components/Header"
 import PrivateRoute from "./components/PrivateRoute"
 import useAuthCheck from "./hooks/useAuthCheck"
 import About from "./pages/About"
+import CreateListing from "./pages/CreateListing"
 import Home from "./pages/Home"
 import NotFound from "./pages/NotFound"
 import Profile from "./pages/Profile"
@@ -26,6 +27,7 @@ const App = () => {
         // Private route
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/create-listing" element={<CreateListing />} />
         </Route>
 
         <Route path="/*" element={<NotFound />} />
