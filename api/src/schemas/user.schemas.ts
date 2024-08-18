@@ -16,7 +16,7 @@ export const UserUpdateSchema = z.object({
 export const UserGoogleLoginSchema = z.object({
     name: z.string().min(3).max(30).trim(),
     email: z.string().max(30).optional(),
-
+    avatar: z.string().max(100).optional(),
 })
 
 export const AccessTokenSchema = z.object({
