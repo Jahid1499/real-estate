@@ -37,7 +37,8 @@ const CreateListing = () => {
                 promises.push(storeImage(files[i]));
             }
             Promise.all(promises)
-                .then((urls) => {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .then((urls: any) => {
                     setFormData({
                         ...formData,
                         imageUrls: formData.imageUrls.concat(urls),
@@ -55,7 +56,7 @@ const CreateListing = () => {
         }
     };
 
-    const storeImage = async (file) => {
+    const storeImage = async (file: File) => {
 
         return new Promise((resolve, reject) => {
             const storage = getStorage(app);
@@ -87,7 +88,8 @@ const CreateListing = () => {
         });
     };
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => {
         if (e.target.id === 'sale' || e.target.id === 'rent') {
             setFormData({
                 ...formData,
@@ -143,7 +145,8 @@ const CreateListing = () => {
                 setError(data.message);
             }
             navigate(`/listing/${data._id}`);
-        } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
             setError(error.message);
             setLoading(false);
         }
