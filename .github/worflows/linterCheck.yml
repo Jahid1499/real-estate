@@ -1,0 +1,35 @@
+name: Linter check
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  linterCheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18-alpine
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Get changes file
+        run: |
+          git fetch origin main 
+          git diff --name-only origin/main ${{ github.sha }} 
+          grep '\.ts\|\.tsx$' > changed_ts_files.txt
+
+      - name: Run Linter
+        run: |
+          if [ -s changed_ts_files.txt ]; then
+            cat changed_ts_files.txt | grep '\.tsx\?$' | xargs npx eslint
+          else
+            echo "No TypeScript files were changed."
+          fi
