@@ -2,7 +2,7 @@ export type RootState = {
     auth: {
         accessToken: string;
         user: {
-            userId: string,
+            id: string,
             email: string,
             name: string,
             role: string,
